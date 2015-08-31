@@ -21,9 +21,9 @@ if (!dir.exists(file.path(working_dir, data_dir))) {
 }
 
 oor_urls <- paste( base_url, 
-                    oor_filenames <- paste( format(Sys.Date(),"%Y"), 
-                                            oor_template,
-                                            state.abb, 
-                                            sep="-" ), 
-                    file_ext, 
-                    sep="" )
+                   oor_filenames <- paste( format(Sys.Date(),"%Y"), 
+                                           oor_template,
+                                           state.abb, 
+                                           sep="-" ), 
+                   file_ext, 
+                   sep="" )
