@@ -8,8 +8,8 @@ base_url <- "http://nlihc.org/sites/default/files/oor/files/reports/state/"
 oor_template <- "OOR"
 file_ext <- ".xls"
 data_urls <- paste( 
-              paste( base_url, 
-                     format(Sys.Date(),"%Y"), 
+              base_url,
+              paste( format(Sys.Date(),"%Y"), 
                      oor_template,
                      state.abb, 
                      sep="-" ), 
