@@ -10,6 +10,8 @@ file_ext <- ".xls"
 data_urls <- paste( 
               paste( base_url, 
                      format(Sys.Date(),"%Y"), 
-                     oor_template,state.abb, 
+                     oor_template,
+                     state.abb, 
                      sep="-" ), 
-              file_ext, sep="" )
+              file_ext, 
+              sep="" )
