@@ -5,32 +5,47 @@
 # See: https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/state.html
 require("datasets")
 
-# Requires plyr package for split-apply-combine goodness
-# See http://plyr.had.co.nz
-require("plyr")
-
-# Note: Useful url
-# https://books.google.com/books?id=X-7sBQAAQBAJ&pg=PA226&lpg=PA226&dq=r+download+list+of+files&source=bl&ots=ORmOUpNNVV&sig=38CJHKqc5IS5ZPUX-OfgTqUqHNg&hl=en&sa=X&ved=0CFgQ6AEwCGoVChMIlpOKyuLTxwIVgkiSCh0IngBX#v=onepage&q=r%20download%20list%20of%20files&f=false
-
 # Some variables to make life easier
-base_url <- "http://nlihc.org/sites/default/files/oor/files/reports/state/"
+base_url <- "http://nlihc.org/sites/default/files/oor/files/reports/state/%s"
 oor_template <- "OOR"
 file_ext <- ".xls"
 data_dir <- "data"
-working_dir <- getwd()
 
-# Create data directory if needed
-if (!dir.exists(file.path(working_dir, data_dir))) {
-  dir.create(file.path(working_dir, data_dir))
-  print("Data directory was created.")
-} else {
-  print("Data directory already exists.")
+## Create dir_name if it doesn't already exist
+make_directory.maybe <- function(dir_name) {
+  working_dir <- getwd()
+  the_path <- file.path(working_dir,dir_name)
+  if (!dir.exists(the_path)) {
+    dir.create(the_path)
+    print("Data directory was created.")
+  } else {
+    print("Data directory already exists.")
+  }
 }
 
-oor_urls <- paste( base_url, 
-                   oor_filenames <- paste( format(Sys.Date(),"%Y"), 
-                                           oor_template,
-                                           state.abb, 
-                                           sep="-" ), 
-                   file_ext, 
-                   sep="" )
+## Download url to file path. If it already exists, redownload it if refetch=TRUE
+download.maybe <- function(data_url, data_path, refetch) {
+                    dest <- file.path(data_path, basename(data_url))
+                    if (refetch || !file.exists(dest))
+                      download.file(data_url, dest)
+                    return(dest)
+}
+
+## Construct the filenames for our remote data
+format_oor_filenames <- paste(
+                  paste(
+                    format(Sys.Date(),"%Y"),
+                    oor_template,
+                    state.abb,
+                    sep="-" ),
+                  file_ext,
+                  sep="")
+
+## Create a vector of urls to our remote data files
+data_urls <- sprintf(base_url,format_oor_filenames)
+
+## Create the data directory if necessary
+make_directory.maybe(data_dir)
+
+## Download all of the remote data files
+data_files <- sapply(data_urls, download.maybe, data_path=data_dir, refetch=FALSE)
